@@ -1,0 +1,19 @@
+{
+  "name": "bitcointipbot",
+  "version": "1.0.0",
+  "description": "TipBot using Bitcoin (Coinbase API) for Telegram @BitcoinTipBot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lustigo/BitcoinTipBot.git"
+  },
+  "author": "Lukas Klassen",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/lustigo/BitcoinTipBot/issues"
+  },
+  "homepage": "https://github.com/lustigo/BitcoinTipBot#readme"
+}
