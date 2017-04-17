@@ -1,0 +1,17 @@
+{
+  "bot":{
+    "token":"XXX",
+    "username":"XXX"
+  },
+  "url":"XXX",
+  "database":{
+    "host":"localhost",
+    "user":"XXX",
+    "password":"XXX",
+    "database":"xxx"
+  },
+  "coinbase":{
+    "client":"XXX",
+    "secret":"XXX"
+  }
+}
