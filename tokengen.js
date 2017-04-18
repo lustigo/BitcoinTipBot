@@ -1,5 +1,6 @@
 const oauth2 = require("simple-oauth2");
 const crypto = require("crypto");
+const btc = require("./bitcoinapi.js");
 
 module.exports = class TokenGen {
     constructor(key, sec, url) {
@@ -32,12 +33,20 @@ module.exports = class TokenGen {
     recieveToken(cd, db, st) {
         //is called when the user is logged in and redirected
         //gets Token and saves it in the db
+        let token;
         this.con.authorizationCode.getToken({
             code: cd,
             redirect_uri: this.url + "/handle"
         }).then(function(res) {
-            let token = this.con.accessToken.create(res);
+            //save Token for first time
+            token = this.con.accessToken.create(res);
             db.saveToken(JSON.stringify(token.token), st);
+        }.bind(this)).then(function() {
+            //get Mail and save it to db
+            let api = new btc(token);
+            api.getMail(function(mail) {
+                db.saveMail(mail, st);
+            });
         }.bind(this)).catch((err) => console.log(err));
     }
     getAccessTokenObject() {

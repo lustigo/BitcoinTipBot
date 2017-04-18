@@ -3,3 +3,6 @@
 /help - Recieve this Help Message
 /tip @<Username> <Amount> - Sends Amount to Username
 /balance - get your balance
+/price - recieve current bitcoin price
+/logout - Disconnect from Coinbase
+/delete - Delete all your entries from our Database
