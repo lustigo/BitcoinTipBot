@@ -15,5 +15,14 @@
   "bugs": {
     "url": "https://github.com/lustigo/BitcoinTipBot/issues"
   },
-  "homepage": "https://github.com/lustigo/BitcoinTipBot#readme"
+  "homepage": "https://github.com/lustigo/BitcoinTipBot#readme",
+  "dependencies": {
+    "coinbase": "^2.0.6",
+    "crypto": "0.0.3",
+    "express": "^4.15.2",
+    "moment": "^2.18.1",
+    "mysql2": "^1.2.0",
+    "simple-oauth2": "^1.1.0",
+    "telegraf": "^3.6.7"
+  }
 }

@@ -2,4 +2,4 @@
 /login - Login to Coinbase & connect to the bot
 /help - Recieve this Help Message
 /tip @<Username> <Amount> - Sends Amount to Username
-/rain <x> <amount> - Sends amount Bitcoin to x random people in the group (x*amount BTC are being spend)
+/balance - get your balance
