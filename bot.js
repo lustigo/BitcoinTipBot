@@ -219,10 +219,10 @@ module.exports = class Bot {
      * Misc
      */
     hasUsernameChanged(username, callback) {
-        //returns true if username has changed
+        //callback true if username has changed
         this.getUserByName(username, function(user) {
             this.bot.telegram.getChat(user.chatID).then(function(chat) {
-                callback(chat.username == user.username);
+                callback(chat.username != user.username);
             });
         }.bind(this));
 
