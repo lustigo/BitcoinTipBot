@@ -11,12 +11,75 @@ module.exports = class BitcoinAPI {
         });
         this.idem = crypto.createHash('md5').update(Math.random(0, 255).toString()).digest('hex');
     }
-    getMail(callback) {
-        //gets the Mailadress
-        this.client.getCurrentUser(function(err, res) {
-            callback(res.email);
+
+    /** API functions ordered by Name*/
+
+    executeSend(options, ctx, tfaCallback, tfacode) {
+        //fourth: get Account
+        this.client.getAccounts({}, function(err, acc) {
+            //fifth: send Money
+            //  acc[0].id
+            if (!err) {
+                acc[0].sendMoney(options, function(err, tx) {
+                    console.log(tx);
+                    if (err) {
+                        if (err.status != 402) {
+                            this.errorhandling(err, function(msg) {
+                                ctx.reply(msg);
+                            });
+                        } else {
+                            //Two Factor Authentication is required
+                            ctx.reply("You are about to send " + options.amount + " BTC to " + options.to + "\n Two-Factor-Authentication required! Type /tfa <CODE> and enter the Code you have recieved via SMS or Authy");;
+                            tfaCallback(options);
+                        }
+                    } else {
+                        ctx.reply("SUCCESS!");
+                    }
+                }, tfacode);
+            } else {
+                this.errorhandling(err, function(msg) {
+                    ctx.reply(msg);
+                });
+            }
+        }.bind(this));
+
+    }
+
+    getBalance(callback, errcb) {
+        //get's balance in BTC and native
+        this.client.getAccounts({}, function(err, acc) {
+            if (!err) {
+                callback(acc[0].balance, acc[0].native_balance);
+            } else {
+                this.errorhandling(err, errcb);
+            }
         });
     }
+
+    getMail(callback, errcb) {
+        //gets the Mailadress
+        this.client.getCurrentUser(function(err, res) {
+            if (!err) {
+                callback(res.email);
+            } else {
+                this.errorhandling(err, errcb);
+            }
+        });
+    }
+
+    getPrice(callback, errcb) {
+        //returns the current BTC price to callback
+        this.client.getExchangeRates({
+            'currency': 'BTC'
+        }, (err, rates) => {
+            if (!err) {
+                callback(rates.data.rates.USD);
+            } else {
+                this.errorhandling(err, errcb);
+            }
+        });
+    }
+
     sendMoney(user, amount, recievermail, recieverusername, ctx, tfaCallback) {
         //sends amount BTC to reciever from User. Then sends message to user and reciever
         //third: check if balance > amount
@@ -39,41 +102,42 @@ module.exports = class BitcoinAPI {
             ctx.reply("Amount is not a Number");
         }
     }
-    executeSend(options, ctx, tfaCallback, tfacode) {
-        //fourth: get Account
-        this.client.getAccounts({}, function(err, acc) {
-            //fifth: send Money
-            //  acc[0].id
 
-            acc[0].sendMoney(options, function(err, tx) {
-                console.log(tx);
-                if (err) {
-                    if (err.status != 402) {
-                        ctx.reply("ERROR! " + err.message);
-                    } else {
-                        //Two Factor Authentication is required
-                        ctx.reply("You are about to send " + options.amount + " BTC to " + options.to + "\n Two-Factor-Authentication required! Type /tfa <CODE> and enter the Code you have recieved via SMS or Authy");;
-                        tfaCallback(options);
-                    }
-                } else {
-                    ctx.reply("SUCCESS!");
+    /**Misc**/
+    errorhandling(err, callback) {
+        //Returns a User message when an Error occurs
+        switch (err.status) {
+            case 400:
+                switch (err.name) {
+                    case "personal_details_required":
+                        callback("Error! You need to fill out personal information on Coinbase.");
+                        break;
+                    case "unverified_email":
+                        callback("Error! Please verify your E-Mail first!");
+                        break;
+                    default:
+                        callback("Server Error, please contact @Lustigo and try it again later");
+                        console.log(err);
                 }
-            }, tfacode);
-        }.bind(this));
-
-    }
-    getPrice(callback) {
-        //returns the current BTC price to callback
-        this.client.getExchangeRates({
-            'currency': 'BTC'
-        }, (err, rates) => {
-            callback(rates.data.rates.USD);
-        });
-    }
-    getBalance(callback) {
-        //get's balance in BTC and native
-        this.client.getAccounts({}, function(err, acc) {
-            callback(acc[0].balance, acc[0].native_balance);
-        });
+                break;
+            case 401:
+                callback("Authentication Error! Please log out an in again");
+                break;
+            case 404:
+                callback("Boterror! Please contact @Lustigo");
+                console.log(err);
+                break;
+            case 429:
+                callback("Servererror 429! Please contact @Lustigo");
+                console.log("RATE LIMIT EXCEEDED!!!!!!!!!!");
+                break;
+            case 500:
+                callback("Servererror! Please try again later!");
+                console.log(err);
+                break;
+            default:
+                callback("ERROR! " + err.message + " Please contact @Lustigo");
+                console.log(err);
+        }
     }
 }

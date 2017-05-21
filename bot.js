@@ -98,6 +98,8 @@ module.exports = class Bot {
         //returns the current balance
         ctx.state.api.getBalance((b, n) => {
             ctx.reply("Your total Bitcoin-Balance is: " + b.amount + " BTC or " + n.amount + " " + n.currency);
+        }, (msg) => {
+            ctx.reply(msg);
         });
     }
     deleteCmd(ctx) {
@@ -131,6 +133,8 @@ module.exports = class Bot {
         ctx.state.api.getPrice(function(price) {
             //sends User the current Price:
             ctx.reply("The current Bitcoin-Price is: " + price + " USD");
+        }, (msg) => {
+            ctx.reply(msg);
         });
     }
     rainCmd(ctx) {
@@ -220,16 +224,12 @@ module.exports = class Bot {
      */
     hasUsernameChanged(username, callback) {
         //callback true if username has changed
-        this.getUserByName(username, function(user) {
+        this.db.getUserByName(username, function(user) {
             this.bot.telegram.getChat(user.chatID).then(function(chat) {
                 callback(chat.username != user.username);
             });
         }.bind(this));
-
-
     }
-
-
 
 
 }
