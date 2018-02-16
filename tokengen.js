@@ -11,11 +11,11 @@ module.exports = class TokenGen {
                 secret: sec
             },
             auth: {
-                tokenHost: "https://coinbase.com/oauth"
+                tokenHost: "https://coinbase.com/oauth",
             }
         };
         this.url = url;
-        this.con = oauth2.create(credentials)
+        this.con = oauth2.create(credentials);
     }
 
     genLoginUrl(st) {

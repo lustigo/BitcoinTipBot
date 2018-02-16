@@ -1,10 +1,12 @@
 const moment = require("moment");
+const bitcoinapi = require("./bitcoinapi");
 
 module.exports = class User {
     constructor(binaryrow, ato, db) {
         //constructs User from database output
         this.chatID = binaryrow["chatID"];
         this.username = binaryrow["username"];
+        this.ato = ato;
         if (binaryrow["authToken"]) {
             let token = JSON.parse(binaryrow["authToken"]);
             let today = new moment();
@@ -31,14 +33,17 @@ module.exports = class User {
         }
         return false;
     }
+
     refresh() {
         //refresh the authKey when it is expired
         if (this.authToken.expired()) {
-            this.authToken.refresh().then(function(res) {
-                //save new Token in DB
-                let token = this.con.accessToken.create(res);
+            //console.log(this.authToken);
+            const api = new bitcoinapi(this.authToken);
+            api.refresh((err,res)=>{
+                let token = this.ato.create(res);
+                this.authToken = token;
                 this.db.saveToken(JSON.stringify(token.token), this.state);
-            }.bind(this));
+            });
         }
     }
     revoke() {

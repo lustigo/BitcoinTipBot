@@ -20,11 +20,10 @@ module.exports = class BitcoinAPI {
             //fifth: send Money
             //  acc[0].id
             if (!err) {
-                acc[0].sendMoney(options, function(err, tx) {
-                    console.log(tx);
+                acc[0].sendMoney(options, (err,tx) => {
                     if (err) {
                         if (err.status != 402) {
-                            this.errorhandling(err, function(msg) {
+                            this.errorhandling(err, (msg)=>{
                                 ctx.reply(msg);
                             });
                         } else {
@@ -47,7 +46,7 @@ module.exports = class BitcoinAPI {
 
     getBalance(callback, errcb) {
         //get's balance in BTC and native
-        this.client.getAccounts({}, function(err, acc) {
+        this.client.getAccounts({}, (err,acc)=>{
             if (!err) {
                 callback(acc[0].balance, acc[0].native_balance);
             } else {
@@ -58,7 +57,7 @@ module.exports = class BitcoinAPI {
 
     getMail(callback, errcb) {
         //gets the Mailadress
-        this.client.getCurrentUser(function(err, res) {
+        this.client.getCurrentUser((err,res)=>{
             if (!err) {
                 callback(res.email);
             } else {
@@ -84,7 +83,7 @@ module.exports = class BitcoinAPI {
         //sends amount BTC to reciever from User. Then sends message to user and reciever
         //third: check if balance > amount
         if (!isNaN(amount)) {
-            this.getBalance(function(b, n) {
+            this.getBalance((b,n)=> {
                 if (b.amount >= amount) {
                     let options = {
                         "to": recievermail,
@@ -97,10 +96,18 @@ module.exports = class BitcoinAPI {
                 } else {
                     ctx.reply("Not enough money!");
                 }
-            }.bind(this));
+            });
         } else {
             ctx.reply("Amount is not a Number");
         }
+    }
+
+    /**
+     * refreshes the auth Token
+     * @param {function} callback Called after execution
+     */
+    refresh(callback){
+        this.client.refresh(callback);
     }
 
     /**Misc**/

@@ -62,6 +62,7 @@ module.exports = class Database {
             sql = sql + " `username` = ?";
             input.push(username);
         }
+        sql += ' GROUP BY chatID';
         //makes Database-Query and passes all things to existingExecutrer-Function
         this.connection.execute(sql, input, function(err, res, fields) {
             this.existingExecuter(err, res, fields, callbackTrue, callbackFalse)
@@ -69,7 +70,7 @@ module.exports = class Database {
     }
     existingExecuter(err, res, fields, callbackTrue, callbackFalse) {
         //helper Function for isExisting
-        if (res[0]["C"] == 0) {
+        if (res.length == 0 || res[0]["C"] == 0) {
             callbackFalse();
         } else if (res[0]["C"] == 1) {
             callbackTrue(res[0]["mail"] == 1);

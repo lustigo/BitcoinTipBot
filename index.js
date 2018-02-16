@@ -22,7 +22,7 @@ app.get("/handle", function(req, res, next) {
 });
 //recieve AuthToken
 app.get("/access", function(req, res, next) {
-    console.log(req.query);
+    //console.log(req.query);
 })
 //starts the Express-App
 app.listen(3000, () => console.log("LISTENING"));

@@ -23,11 +23,9 @@ module.exports = class Bot {
         this.initRoutes();
     }
     setHook(url) {
-        //TODO: CHANGE
         //sets the URL for the Webhook
         this.bot.telegram.setWebhook(url + "/" + this.path);
         //connects ExpressApp with Webhook
-        //this.bot.startWebhook("/tipbot",null,3000);
         this.express.use(this.bot.webhookCallback("/" + this.path));
     }
     initRoutes() {
@@ -145,7 +143,7 @@ module.exports = class Bot {
     }
     registerCmd(ctx) {
         //Is Called when User calls /register
-        ctx.reply("Register now a Coinbase Account for Free, have your Bitcoin Wallet always with you and tip and be tipped via Telegram free of charge! <a href='https://www.coinbase.com/join/553f6c61345343f7c50000d4'>REGISTER NOW</a> (then come back and /login)", {
+        ctx.reply("Register now a Coinbase Account for Free, have your Bitcoin Wallet always with you and tip and be tipped via Telegram free of charge! <a href='https://www.coinbase.com/join/553f6c61345343f7c50000d4'>REGISTER NOW (referral Link)</a> (then come back and /login)", {
             parse_mode: "HTML"
         });
     }
