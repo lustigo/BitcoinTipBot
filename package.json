@@ -17,10 +17,10 @@
   },
   "homepage": "https://github.com/lustigo/BitcoinTipBot#readme",
   "dependencies": {
-    "coinbase": "^2.0.7",
+    "coinbase": "^2.0.8",
     "crypto": "0.0.3",
-    "express": "^4.15.2",
-    "moment": "^2.18.1",
+    "express": "^4.16.0",
+    "moment": "^2.19.3",
     "mysql2": "^1.2.0",
     "simple-oauth2": "^1.1.0",
     "telegraf": "^3.6.7"
